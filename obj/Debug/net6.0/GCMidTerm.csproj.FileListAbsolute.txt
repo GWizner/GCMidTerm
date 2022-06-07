@@ -1,0 +1,15 @@
+C:\Users\Gregory Wizner\source\repos\GCMidTerm\bin\Debug\net6.0\GCMidTerm.exe
+C:\Users\Gregory Wizner\source\repos\GCMidTerm\bin\Debug\net6.0\GCMidTerm.deps.json
+C:\Users\Gregory Wizner\source\repos\GCMidTerm\bin\Debug\net6.0\GCMidTerm.runtimeconfig.json
+C:\Users\Gregory Wizner\source\repos\GCMidTerm\bin\Debug\net6.0\GCMidTerm.dll
+C:\Users\Gregory Wizner\source\repos\GCMidTerm\bin\Debug\net6.0\GCMidTerm.pdb
+C:\Users\Gregory Wizner\source\repos\GCMidTerm\obj\Debug\net6.0\GCMidTerm.csproj.AssemblyReference.cache
+C:\Users\Gregory Wizner\source\repos\GCMidTerm\obj\Debug\net6.0\GCMidTerm.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Gregory Wizner\source\repos\GCMidTerm\obj\Debug\net6.0\GCMidTerm.AssemblyInfoInputs.cache
+C:\Users\Gregory Wizner\source\repos\GCMidTerm\obj\Debug\net6.0\GCMidTerm.AssemblyInfo.cs
+C:\Users\Gregory Wizner\source\repos\GCMidTerm\obj\Debug\net6.0\GCMidTerm.csproj.CoreCompileInputs.cache
+C:\Users\Gregory Wizner\source\repos\GCMidTerm\obj\Debug\net6.0\GCMidTerm.dll
+C:\Users\Gregory Wizner\source\repos\GCMidTerm\obj\Debug\net6.0\refint\GCMidTerm.dll
+C:\Users\Gregory Wizner\source\repos\GCMidTerm\obj\Debug\net6.0\GCMidTerm.pdb
+C:\Users\Gregory Wizner\source\repos\GCMidTerm\obj\Debug\net6.0\GCMidTerm.genruntimeconfig.cache
+C:\Users\Gregory Wizner\source\repos\GCMidTerm\obj\Debug\net6.0\ref\GCMidTerm.dll
