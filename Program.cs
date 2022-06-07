@@ -183,7 +183,13 @@ namespace MidTermProject2022
                                         Console.ResetColor();
                                     }
                                 }
+                                   
+                                Console.WriteLine();
+                                keepAsk1 = false;
+                                keepAsk2 = Validator.getContinue();
+                                Console.WriteLine();
                                 keepAsk3 = false;
+                                
                             }
                             else if (authorName.Contains("carroll"))
                             {
@@ -197,7 +203,13 @@ namespace MidTermProject2022
                                         Console.ResetColor();
                                     }
                                 }
+                                
+                                Console.WriteLine();
+                                keepAsk1 = false;
+                                keepAsk2 = Validator.getContinue();
+                                Console.WriteLine();
                                 keepAsk3 = false;
+                            
                             }
                             else if (authorName.Contains("dick"))//Don't be immature
                             {
@@ -211,7 +223,13 @@ namespace MidTermProject2022
                                         Console.ResetColor();
                                     }
                                 }
+                                
+                                Console.WriteLine();
+                                keepAsk1 = false;
+                                keepAsk2 = Validator.getContinue();
+                                Console.WriteLine();
                                 keepAsk3 = false;
+
                             }
                             else if (authorName.Contains("doyle"))
                             {
@@ -225,7 +243,13 @@ namespace MidTermProject2022
                                         Console.ResetColor();
                                     }
                                 }
+                                
+                                Console.WriteLine();
+                                keepAsk1 = false;
+                                keepAsk2 = Validator.getContinue();
+                                Console.WriteLine();
                                 keepAsk3 = false;
+
                             }
                             else if (authorName.Contains("gibson"))
                             {
@@ -239,7 +263,13 @@ namespace MidTermProject2022
                                         Console.ResetColor();
                                     }
                                 }
+
+                                Console.WriteLine();
+                                keepAsk1 = false;
+                                keepAsk2 = Validator.getContinue();
+                                Console.WriteLine();
                                 keepAsk3 = false;
+
                             }
                             else if (authorName.Contains("herbert"))
                             {
@@ -253,7 +283,13 @@ namespace MidTermProject2022
                                         Console.ResetColor();
                                     }
                                 }
+                                
+                                Console.WriteLine();
+                                keepAsk1 = false;
+                                keepAsk2 = Validator.getContinue();
+                                Console.WriteLine();
                                 keepAsk3 = false;
+
                             }
                             else if (authorName.Contains("macdonald"))
                             {
@@ -267,7 +303,13 @@ namespace MidTermProject2022
                                         Console.ResetColor();
                                     }
                                 }
+                                
+                                Console.WriteLine();
+                                keepAsk1 = false;
+                                keepAsk2 = Validator.getContinue();
+                                Console.WriteLine();
                                 keepAsk3 = false;
+
                             }
                             else
                                 Console.WriteLine("I do not recognize your input. Please try one of the available options.");
