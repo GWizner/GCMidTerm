@@ -53,7 +53,10 @@ namespace MidTermProject2022
                 }
                 else if (choice == "n" || choice == "no")
                 {
+                    Console.WriteLine();
+                    Console.WriteLine("Thank you for visiting our library, have a nice day!");
                     result = false;
+                    //keepAsk3 = false;
                     break;
                 }
                 else
@@ -69,7 +72,7 @@ namespace MidTermProject2022
         //Overloaded Method to take in author name the user typed.
         //This method will run code that lets the user choose to checkout a book or not
         //------------------------------------------------------------------------------------------------------
-        public static bool getContinue(string author)
+        /*public static bool getContinue(string author)
         {
             bool result = true;
             bool run = true;
@@ -92,7 +95,8 @@ namespace MidTermProject2022
                 }
                 else if (choice == "n" || choice == "no")
                 {
-
+                    //Console.WriteLine();
+                    //Console.WriteLine("Thank you for visiting our library, have a nice day!");
                     result = false;
                     break;
                 }
@@ -102,7 +106,7 @@ namespace MidTermProject2022
                 }
             }
             return result;
-        }
+        }*/
 
     }
 
@@ -177,6 +181,7 @@ namespace MidTermProject2022
             bool keepAsk1 = true;
             bool keepAsk2 = true;
             bool keepAsk3 = true;
+            var checkedOutBooks = new List<string>();
             var byAuthor = book.OrderBy(x => x.author)
                                .GroupBy(a => a.author)
                                .ToList();
@@ -195,7 +200,8 @@ namespace MidTermProject2022
 
                 MainScreen:
 
-                    Console.WriteLine("For a list of books, please input 1. For a list of authors, please input 2: ");
+                    Console.WriteLine("For a list of books, please input 1. For a list of authors, please input 2. If you would like" +
+                        " to leave input 3: ");
                     string userAnswer1 = Console.ReadLine().ToLower();
                     trueAns1 = int.TryParse(userAnswer1, out userAns1);
                     Console.WriteLine();
@@ -220,42 +226,62 @@ namespace MidTermProject2022
                         // Running IF STATEMENT that asks whether the user wanted to check out a book. if the book
                         // is not checked out, the code will mark the book as checked out and remove it from the list.
                         //------------------------------------------------------------------------------------------------------
-                        if (keepAsk2 == true)
+                        while (keepAsk2 == true)
                         {
-                            Console.WriteLine("Which title above would you like to check out? Enter for None.");
-                            string usertitle = Console.ReadLine().ToLower();
+                            Console.WriteLine("Please enter the title of the book you would like to check out, or press enter return to the " +
+                                "previous screen: ");
+                            string userTitle = Console.ReadLine().ToLower();
 
+                            if (String.IsNullOrWhiteSpace(userTitle))
+                            {
+                                goto MainScreen;
+                            }
                             foreach (var current in book)
                             {
-                                if (current.title.ToLower() == usertitle.ToLower())
+                                if (current.title.ToLower() == userTitle.ToLower())
                                 {
                                     current.checkedOut = true;
                                     current.checkOut = DateTime.Now;
                                     current.dueDate = current.checkOut.Add(fourteenDays);
+                                    checkedOutBooks.Add(userTitle);
 
-                                    Console.ForegroundColor = ConsoleColor.Green;
-                                    Console.WriteLine($"{current.title} checked out at: {current.checkOut}");
                                     Console.ForegroundColor = ConsoleColor.Yellow;
+                                    Console.WriteLine($"{current.title} checked out at: {current.checkOut}");
+                                    Console.ForegroundColor = ConsoleColor.Red;
                                     Console.WriteLine($"Due Date is: {current.dueDate}");
                                     Console.ResetColor();
+                                    Console.WriteLine();
                                     book.Remove(current);
+                                    keepAsk2 = true;
                                     break;
                                 }
+                                else
+                                {
+                                    keepAsk2 = false;
+                                }
                             }
-
                         }
 
                         //------------------------------------------------------------------------------------------------------
                         // Running FOR LOOP to show list of titles by author
                         // so user can see whats remaining
                         //------------------------------------------------------------------------------------------------------
-                        foreach (var titleSearch in book)
+                        foreach (var titleSearch in checkedOutBooks)
                         {
+                            for (int currBookNo = 0; currBookNo < book.Count; currBookNo++)
                             {
                                 Console.ForegroundColor = ConsoleColor.Cyan;
-                                string titleFormat = String.Format("{0, 41}", $"{titleSearch.title}");
-                                Console.WriteLine(titleFormat);
+                                string titleFormat = String.Format("{0, 41}", $"{titleSearch}");
                                 Console.ResetColor();
+
+                                if (currBookNo == 1)
+                                {
+                                    Console.WriteLine("You have checked out: ");
+                                    Console.ForegroundColor = ConsoleColor.Yellow;
+                                    Console.WriteLine(titleSearch);
+                                    Console.ResetColor();
+                                    Console.WriteLine();
+                                }
                             }
                         }
 
@@ -289,8 +315,8 @@ namespace MidTermProject2022
                                     if (bookSearch.author == "Asimov, Isaac")
                                     {
                                         Console.ForegroundColor = ConsoleColor.Cyan;
-                                        string asimovFormat = String.Format("{0, 41}", $"{bookSearch.title}");
-                                        Console.WriteLine(asimovFormat);
+                                        string carrollFormat = String.Format("{0, 41}", $"{bookSearch.title}");
+                                        Console.WriteLine(carrollFormat);
                                         Console.ResetColor();
                                     }
                                 }
@@ -299,7 +325,7 @@ namespace MidTermProject2022
                                 keepAsk1 = false;
                                 keepAsk2 = Validator.getContinue();
                                 Console.WriteLine();
-                                keepAsk3 = false;
+                                //keepAsk3 = false;
 
                                 //------------------------------------------------------------------------------------------------------
                                 // Running IF STATEMENT that asks whether the user wanted to check out a book. if the book
@@ -318,11 +344,12 @@ namespace MidTermProject2022
                                             current.checkOut = DateTime.Now;
                                             current.dueDate = current.checkOut.Add(fourteenDays);
 
-                                            Console.ForegroundColor = ConsoleColor.Green;
-                                            Console.WriteLine($"{current.title} checked out at: {current.checkOut}");
                                             Console.ForegroundColor = ConsoleColor.Yellow;
+                                            Console.WriteLine($"{current.title} checked out at: {current.checkOut}");
+                                            Console.ForegroundColor = ConsoleColor.Red;
                                             Console.WriteLine($"Due Date is: {current.dueDate}");
                                             Console.ResetColor();
+                                            Console.WriteLine();
                                             book.Remove(current);
                                             break;
                                         }
@@ -339,8 +366,8 @@ namespace MidTermProject2022
                                     if (bookSearch.author == "Asimov, Isaac")
                                     {
                                         Console.ForegroundColor = ConsoleColor.Cyan;
-                                        string asimovFormat = String.Format("{0, 41}", $"{bookSearch.title}");
-                                        Console.WriteLine(asimovFormat);
+                                        string carrollFormat = String.Format("{0, 41}", $"{bookSearch.title}");
+                                        Console.WriteLine(carrollFormat);
                                         Console.ResetColor();
                                     }
                                 }
@@ -363,7 +390,7 @@ namespace MidTermProject2022
                                 keepAsk1 = false;
                                 keepAsk2 = Validator.getContinue();
                                 Console.WriteLine();
-                                keepAsk3 = false;
+                                //keepAsk3 = false;
 
                                 //------------------------------------------------------------------------------------------------------
                                 // Running IF STATEMENT that asks whether the user wanted to check out a book. if the book
@@ -382,11 +409,12 @@ namespace MidTermProject2022
                                             current.checkOut = DateTime.Now;
                                             current.dueDate = current.checkOut.Add(fourteenDays);
 
-                                            Console.ForegroundColor = ConsoleColor.Green;
-                                            Console.WriteLine($"{current.title} checked out at: {current.checkOut}");
                                             Console.ForegroundColor = ConsoleColor.Yellow;
+                                            Console.WriteLine($"{current.title} checked out at: {current.checkOut}");
+                                            Console.ForegroundColor = ConsoleColor.Red;
                                             Console.WriteLine($"Due Date is: {current.dueDate}");
                                             Console.ResetColor();
+                                            Console.WriteLine();
                                             book.Remove(current);
                                             break;
                                         }
@@ -427,7 +455,7 @@ namespace MidTermProject2022
                                 keepAsk1 = false;
                                 keepAsk2 = Validator.getContinue();
                                 Console.WriteLine();
-                                keepAsk3 = false;
+                                //keepAsk3 = false;
 
                                 //------------------------------------------------------------------------------------------------------
                                 // Running IF STATEMENT that asks whether the user wanted to check out a book. if the book
@@ -446,11 +474,12 @@ namespace MidTermProject2022
                                             current.checkOut = DateTime.Now;
                                             current.dueDate = current.checkOut.Add(fourteenDays);
 
-                                            Console.ForegroundColor = ConsoleColor.Green;
-                                            Console.WriteLine($"{current.title} checked out at: {current.checkOut}");
                                             Console.ForegroundColor = ConsoleColor.Yellow;
+                                            Console.WriteLine($"{current.title} checked out at: {current.checkOut}");
+                                            Console.ForegroundColor = ConsoleColor.Red;
                                             Console.WriteLine($"Due Date is: {current.dueDate}");
                                             Console.ResetColor();
+                                            Console.WriteLine();
                                             book.Remove(current);
                                             break;
                                         }
@@ -491,7 +520,7 @@ namespace MidTermProject2022
                                 keepAsk1 = false;
                                 keepAsk2 = Validator.getContinue();
                                 Console.WriteLine();
-                                keepAsk3 = false;
+                                //keepAsk3 = false;
 
                                 //------------------------------------------------------------------------------------------------------
                                 // Running IF STATEMENT that asks whether the user wanted to check out a book. if the book
@@ -510,11 +539,12 @@ namespace MidTermProject2022
                                             current.checkOut = DateTime.Now;
                                             current.dueDate = current.checkOut.Add(fourteenDays);
 
-                                            Console.ForegroundColor = ConsoleColor.Green;
-                                            Console.WriteLine($"{current.title} checked out at: {current.checkOut}");
                                             Console.ForegroundColor = ConsoleColor.Yellow;
+                                            Console.WriteLine($"{current.title} checked out at: {current.checkOut}");
+                                            Console.ForegroundColor = ConsoleColor.Red;
                                             Console.WriteLine($"Due Date is: {current.dueDate}");
                                             Console.ResetColor();
+                                            Console.WriteLine();
                                             book.Remove(current);
                                             break;
                                         }
@@ -555,7 +585,7 @@ namespace MidTermProject2022
                                 keepAsk1 = false;
                                 keepAsk2 = Validator.getContinue();
                                 Console.WriteLine();
-                                keepAsk3 = false;
+                                //keepAsk3 = false;
 
 
                                 //------------------------------------------------------------------------------------------------------
@@ -575,11 +605,12 @@ namespace MidTermProject2022
                                             current.checkOut = DateTime.Now;
                                             current.dueDate = current.checkOut.Add(fourteenDays);
 
-                                            Console.ForegroundColor = ConsoleColor.Green;
-                                            Console.WriteLine($"{current.title} checked out at: {current.checkOut}");
                                             Console.ForegroundColor = ConsoleColor.Yellow;
+                                            Console.WriteLine($"{current.title} checked out at: {current.checkOut}");
+                                            Console.ForegroundColor = ConsoleColor.Red;
                                             Console.WriteLine($"Due Date is: {current.dueDate}");
                                             Console.ResetColor();
+                                            Console.WriteLine();
                                             book.Remove(current);
                                             break;
                                         }
@@ -620,7 +651,7 @@ namespace MidTermProject2022
                                 keepAsk1 = false;
                                 keepAsk2 = Validator.getContinue();
                                 Console.WriteLine();
-                                keepAsk3 = false;
+                                //keepAsk3 = false;
 
                                 //------------------------------------------------------------------------------------------------------
                                 // Running IF STATEMENT that asks whether the user wanted to check out a book. if the book
@@ -639,11 +670,12 @@ namespace MidTermProject2022
                                             current.checkOut = DateTime.Now;
                                             current.dueDate = current.checkOut.Add(fourteenDays);
 
-                                            Console.ForegroundColor = ConsoleColor.Green;
-                                            Console.WriteLine($"{current.title} checked out at: {current.checkOut}");
                                             Console.ForegroundColor = ConsoleColor.Yellow;
+                                            Console.WriteLine($"{current.title} checked out at: {current.checkOut}");
+                                            Console.ForegroundColor = ConsoleColor.Red;
                                             Console.WriteLine($"Due Date is: {current.dueDate}");
                                             Console.ResetColor();
+                                            Console.WriteLine();
                                             book.Remove(current);
                                             break;
                                         }
@@ -683,7 +715,7 @@ namespace MidTermProject2022
                                 keepAsk1 = false;
                                 keepAsk2 = Validator.getContinue();
                                 Console.WriteLine();
-                                keepAsk3 = false;
+                                //keepAsk3 = false;
 
                                 //------------------------------------------------------------------------------------------------------
                                 // Running IF STATEMENT that asks whether the user wanted to check out a book. if the book
@@ -702,11 +734,12 @@ namespace MidTermProject2022
                                             current.checkOut = DateTime.Now;
                                             current.dueDate = current.checkOut.Add(fourteenDays);
 
-                                            Console.ForegroundColor = ConsoleColor.Green;
-                                            Console.WriteLine($"{current.title} checked out at: {current.checkOut}");
                                             Console.ForegroundColor = ConsoleColor.Yellow;
+                                            Console.WriteLine($"{current.title} checked out at: {current.checkOut}");
+                                            Console.ForegroundColor = ConsoleColor.Red;
                                             Console.WriteLine($"Due Date is: {current.dueDate}");
                                             Console.ResetColor();
+                                            Console.WriteLine();
                                             book.Remove(current);
                                             break;
                                         }
@@ -734,10 +767,34 @@ namespace MidTermProject2022
                             Console.WriteLine();
                             keepAsk3 = true;
                         }
-                        keepAsk2 = Validator.getContinue();
-                        Console.WriteLine();
+                        //keepAsk2 = Validator.getContinue();
+                        //Console.WriteLine();
 
 
+                    }
+                    else if (userAns1 == 3)
+                    {
+                        foreach (var titleSearch in checkedOutBooks)
+                        {
+                            for (int currBookNo = 0; currBookNo < book.Count; currBookNo++)
+                            {
+                                Console.ForegroundColor = ConsoleColor.Cyan;
+                                string titleFormat = String.Format("{0, 41}", $"{titleSearch}");
+                                Console.ResetColor();
+
+                                if (currBookNo == 1)
+                                {
+                                    Console.WriteLine("You have checked out: ");
+                                    Console.ForegroundColor = ConsoleColor.Yellow;
+                                    Console.WriteLine(titleSearch);
+                                    Console.ResetColor();
+                                    Console.WriteLine();
+                                }
+                            }
+                        }
+                        Console.WriteLine("Thank you for visiting our library, have a nice day!");
+                        keepAsk1 = false;
+                        keepAsk2 = false;
                     }
                     else
                     {
