@@ -117,7 +117,7 @@ namespace MidTermProject2022
 
         public string title { get; private set; }
         public string author { get; private set; }
-        public DateTime checkOut;
+        public DateTime checkOutDate;
         public DateTime dueDate;
         public bool checkedOut;
 
@@ -154,6 +154,7 @@ namespace MidTermProject2022
                 new Book("The White Company", "Doyle, Sir Arthur Conan")
             };
 
+            var booksOut = new List<Book>();
 
             string asimov = "Asimov";
             string carroll = "Carroll";
@@ -221,73 +222,89 @@ namespace MidTermProject2022
                         keepAsk1 = false;
                         keepAsk2 = Validator.getContinue();
                         Console.WriteLine();
+                        bool anyBooksToCheckOut = (book.Count == 0);
+
 
                         //------------------------------------------------------------------------------------------------------
                         // Running IF STATEMENT that asks whether the user wanted to check out a book. if the book
                         // is not checked out, the code will mark the book as checked out and remove it from the list.
                         //------------------------------------------------------------------------------------------------------
-                        while (keepAsk2 == true)
+                        if (anyBooksToCheckOut)
                         {
-                            Console.WriteLine("Please enter the title of the book you would like to check out, or press enter return to the " +
-                                "previous screen: ");
-                            string userTitle = Console.ReadLine().ToLower();
+                            while (keepAsk2 == true)
+                            {
+                                Console.WriteLine("Please enter the title of the book you would like to check out, or press enter return " +
+                                    "to the previous screen: ");
+                                string userTitle = Console.ReadLine().ToLower();
 
-                            if (String.IsNullOrWhiteSpace(userTitle))
-                            {
-                                goto MainScreen;
-                            }
-                            foreach (var current in book)
-                            {
-                                if (current.title.ToLower() == userTitle.ToLower())
+                                if (String.IsNullOrWhiteSpace(userTitle))
                                 {
-                                    current.checkedOut = true;
-                                    current.checkOut = DateTime.Now;
-                                    current.dueDate = current.checkOut.Add(fourteenDays);
-                                    checkedOutBooks.Add(userTitle);
-
-                                    Console.ForegroundColor = ConsoleColor.Yellow;
-                                    Console.WriteLine($"{current.title} checked out at: {current.checkOut}");
-                                    Console.ForegroundColor = ConsoleColor.Red;
-                                    Console.WriteLine($"Due Date is: {current.dueDate}");
-                                    Console.ResetColor();
-                                    Console.WriteLine();
-                                    book.Remove(current);
-                                    keepAsk2 = true;
-                                    break;
+                                    goto MainScreen;
                                 }
-                                else
+
+
+                                CheckoutBookOut(book, booksOut, keepAsk2, fourteenDays);
+                                /*foreach (var current in book)
                                 {
-                                    keepAsk2 = false;
+                                    if (current.title.ToLower() == userTitle.ToLower())
+                                    {
+                                        current.checkedOut = true;
+                                        current.checkOutDate = DateTime.Now;
+                                        current.dueDate = current.checkOutDate.Add(fourteenDays);
+                                        checkedOutBooks.Add(userTitle);
+
+                                        Console.ForegroundColor = ConsoleColor.Yellow;
+                                        Console.WriteLine($"{current.title} checked out at: {current.checkOutDate}");
+                                        Console.ForegroundColor = ConsoleColor.Red;
+                                        Console.WriteLine($"Due Date is: {current.dueDate}");
+                                        Console.ResetColor();
+                                        Console.WriteLine();
+                                        book.Remove(current);
+                                        keepAsk2 = true;
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        keepAsk2 = false;
+                                    }
+                                }*/
+                            }
+
+
+
+
+                            //------------------------------------------------------------------------------------------------------
+                            // Running FOR LOOP to show list of titles by author
+                            // so user can see whats remaining
+                            //------------------------------------------------------------------------------------------------------
+                            foreach (var titleSearch in checkedOutBooks)
+                            {
+                                for (int currBookNo = 0; currBookNo < book.Count; currBookNo++)
+                                {
+                                    Console.ForegroundColor = ConsoleColor.Cyan;
+                                    string titleFormat = String.Format("{0, 41}", $"{titleSearch}");
+                                    Console.ResetColor();
+
+                                    if (currBookNo == 1)
+                                    {
+                                        Console.WriteLine("You have checked out: ");
+                                        Console.ForegroundColor = ConsoleColor.Yellow;
+                                        Console.WriteLine(titleSearch);
+                                        Console.ResetColor();
+                                        Console.WriteLine();
+                                    }
                                 }
                             }
                         }
-
-                        //------------------------------------------------------------------------------------------------------
-                        // Running FOR LOOP to show list of titles by author
-                        // so user can see whats remaining
-                        //------------------------------------------------------------------------------------------------------
-                        foreach (var titleSearch in checkedOutBooks)
+                        else
                         {
-                            for (int currBookNo = 0; currBookNo < book.Count; currBookNo++)
-                            {
-                                Console.ForegroundColor = ConsoleColor.Cyan;
-                                string titleFormat = String.Format("{0, 41}", $"{titleSearch}");
-                                Console.ResetColor();
 
-                                if (currBookNo == 1)
-                                {
-                                    Console.WriteLine("You have checked out: ");
-                                    Console.ForegroundColor = ConsoleColor.Yellow;
-                                    Console.WriteLine(titleSearch);
-                                    Console.ResetColor();
-                                    Console.WriteLine();
-                                }
-                            }
                         }
 
                     }
                     else if (userAns1 == 2)
                     {
+                        // Print books grouped by author
                         foreach (var authorSearch in byAuthor)
                         {
                             Console.ForegroundColor = ConsoleColor.Magenta;
@@ -308,467 +325,36 @@ namespace MidTermProject2022
                             {
                                 goto MainScreen;
                             }
-                            else if (authorName.Contains("asimov"))
+                            else if (!string.IsNullOrWhiteSpace(authorName))
                             {
-                                foreach (var bookSearch in book)
+                                if (book.Any(x => x.author.Contains(authorName, StringComparison.CurrentCultureIgnoreCase) && !x.checkedOut))
                                 {
-                                    if (bookSearch.author == "Asimov, Isaac")
+                                    foreach (var bookSearch in book)
                                     {
-                                        Console.ForegroundColor = ConsoleColor.Cyan;
-                                        string carrollFormat = String.Format("{0, 41}", $"{bookSearch.title}");
-                                        Console.WriteLine(carrollFormat);
-                                        Console.ResetColor();
-                                    }
-                                }
-
-                                Console.WriteLine();
-                                keepAsk1 = false;
-                                keepAsk2 = Validator.getContinue();
-                                Console.WriteLine();
-                                //keepAsk3 = false;
-
-                                //------------------------------------------------------------------------------------------------------
-                                // Running IF STATEMENT that asks whether the user wanted to check out a book. if the book
-                                // if not checked out, the code will mark the book as checked out and remove it from the list.
-                                //------------------------------------------------------------------------------------------------------
-                                if (keepAsk2 == true)
-                                {
-                                    Console.WriteLine("Which title above would you like to check out? Enter for None.");
-                                    string usertitle = Console.ReadLine().ToLower();
-
-                                    foreach (var current in book)
-                                    {
-                                        if (current.title.ToLower() == usertitle.ToLower())
+                                        if (bookSearch.author.Contains(authorName, StringComparison.CurrentCultureIgnoreCase))
                                         {
-                                            current.checkedOut = true;
-                                            current.checkOut = DateTime.Now;
-                                            current.dueDate = current.checkOut.Add(fourteenDays);
-
-                                            Console.ForegroundColor = ConsoleColor.Yellow;
-                                            Console.WriteLine($"{current.title} checked out at: {current.checkOut}");
-                                            Console.ForegroundColor = ConsoleColor.Red;
-                                            Console.WriteLine($"Due Date is: {current.dueDate}");
+                                            Console.ForegroundColor = ConsoleColor.Cyan;
+                                            string authorFormat = String.Format("{0, 41}", $"{bookSearch.title}");
+                                            Console.WriteLine(authorFormat);
                                             Console.ResetColor();
-                                            Console.WriteLine();
-                                            book.Remove(current);
-                                            break;
                                         }
                                     }
 
+                                    Console.WriteLine();
+                                    keepAsk1 = false;
+                                    keepAsk2 = Validator.getContinue();
+                                    Console.WriteLine();
+
+                                    CheckoutBookOut(book, booksOut, keepAsk2, fourteenDays);
                                 }
-
-                                //------------------------------------------------------------------------------------------------------
-                                // Running FOR LOOP to show list of titles by author
-                                // so user can see whats remaining
-                                //------------------------------------------------------------------------------------------------------
-                                foreach (var bookSearch in book)
+                                else
                                 {
-                                    if (bookSearch.author == "Asimov, Isaac")
-                                    {
-                                        Console.ForegroundColor = ConsoleColor.Cyan;
-                                        string carrollFormat = String.Format("{0, 41}", $"{bookSearch.title}");
-                                        Console.WriteLine(carrollFormat);
-                                        Console.ResetColor();
-                                    }
-                                }
-
-                            }
-                            else if (authorName.Contains("carroll"))
-                            {
-                                foreach (var bookSearch in book)
-                                {
-                                    if (bookSearch.author == "Carroll, Lewis")
-                                    {
-                                        Console.ForegroundColor = ConsoleColor.Cyan;
-                                        string carrollFormat = String.Format("{0, 41}", $"{bookSearch.title}");
-                                        Console.WriteLine(carrollFormat);
-                                        Console.ResetColor();
-                                    }
-                                }
-
-                                Console.WriteLine();
-                                keepAsk1 = false;
-                                keepAsk2 = Validator.getContinue();
-                                Console.WriteLine();
-                                //keepAsk3 = false;
-
-                                //------------------------------------------------------------------------------------------------------
-                                // Running IF STATEMENT that asks whether the user wanted to check out a book. if the book
-                                // if not checked out, the code will mark the book as checked out and remove it from the list.
-                                //------------------------------------------------------------------------------------------------------
-                                if (keepAsk2 == true)
-                                {
-                                    Console.WriteLine("Which title above would you like to check out? Enter for None.");
-                                    string usertitle = Console.ReadLine().ToLower();
-
-                                    foreach (var current in book)
-                                    {
-                                        if (current.title.ToLower() == usertitle.ToLower())
-                                        {
-                                            current.checkedOut = true;
-                                            current.checkOut = DateTime.Now;
-                                            current.dueDate = current.checkOut.Add(fourteenDays);
-
-                                            Console.ForegroundColor = ConsoleColor.Yellow;
-                                            Console.WriteLine($"{current.title} checked out at: {current.checkOut}");
-                                            Console.ForegroundColor = ConsoleColor.Red;
-                                            Console.WriteLine($"Due Date is: {current.dueDate}");
-                                            Console.ResetColor();
-                                            Console.WriteLine();
-                                            book.Remove(current);
-                                            break;
-                                        }
-                                    }
-
-                                }
-
-                                //------------------------------------------------------------------------------------------------------
-                                // Running FOR LOOP to show list of titles by author
-                                // so user can see whats remaining
-                                //------------------------------------------------------------------------------------------------------
-                                foreach (var bookSearch in book)
-                                {
-                                    if (bookSearch.author == "Carroll, Lewis")
-                                    {
-                                        Console.ForegroundColor = ConsoleColor.Cyan;
-                                        string carrollFormat = String.Format("{0, 41}", $"{bookSearch.title}");
-                                        Console.WriteLine(carrollFormat);
-                                        Console.ResetColor();
-                                    }
-                                }
-
-                            }
-                            else if (authorName.Contains("dick"))//Don't be immature
-                            {
-                                foreach (var bookSearch in book)
-                                {
-                                    if (bookSearch.author == "Dick, Philip K.")
-                                    {
-                                        Console.ForegroundColor = ConsoleColor.Cyan;
-                                        string kDickFormat = String.Format("{0, 41}", $"{bookSearch.title}");
-                                        Console.WriteLine(kDickFormat);
-                                        Console.ResetColor();
-                                    }
-                                }
-
-                                Console.WriteLine();
-                                keepAsk1 = false;
-                                keepAsk2 = Validator.getContinue();
-                                Console.WriteLine();
-                                //keepAsk3 = false;
-
-                                //------------------------------------------------------------------------------------------------------
-                                // Running IF STATEMENT that asks whether the user wanted to check out a book. if the book
-                                // if not checked out, the code will mark the book as checked out and remove it from the list.
-                                //------------------------------------------------------------------------------------------------------
-                                if (keepAsk2 == true)
-                                {
-                                    Console.WriteLine("Which title above would you like to check out? Enter for None.");
-                                    string usertitle = Console.ReadLine().ToLower();
-
-                                    foreach (var current in book)
-                                    {
-                                        if (current.title.ToLower() == usertitle.ToLower())
-                                        {
-                                            current.checkedOut = true;
-                                            current.checkOut = DateTime.Now;
-                                            current.dueDate = current.checkOut.Add(fourteenDays);
-
-                                            Console.ForegroundColor = ConsoleColor.Yellow;
-                                            Console.WriteLine($"{current.title} checked out at: {current.checkOut}");
-                                            Console.ForegroundColor = ConsoleColor.Red;
-                                            Console.WriteLine($"Due Date is: {current.dueDate}");
-                                            Console.ResetColor();
-                                            Console.WriteLine();
-                                            book.Remove(current);
-                                            break;
-                                        }
-                                    }
-
-                                }
-
-                                //------------------------------------------------------------------------------------------------------
-                                // Running FOR LOOP to show list of titles by author
-                                // so user can see whats remaining
-                                //------------------------------------------------------------------------------------------------------
-                                foreach (var bookSearch in book)
-                                {
-                                    if (bookSearch.author == "Dick, Philip K.")
-                                    {
-                                        Console.ForegroundColor = ConsoleColor.Cyan;
-                                        string kDickFormat = String.Format("{0, 41}", $"{bookSearch.title}");
-                                        Console.WriteLine(kDickFormat);
-                                        Console.ResetColor();
-                                    }
-                                }
-
-                            }
-                            else if (authorName.Contains("doyle"))
-                            {
-                                foreach (var bookSearch in book)
-                                {
-                                    if (bookSearch.author == "Doyle, Sir Arthur Conan")
-                                    {
-                                        Console.ForegroundColor = ConsoleColor.Cyan;
-                                        string doyleFormat = String.Format("{0, 41}", $"{bookSearch.title}");
-                                        Console.WriteLine(doyleFormat);
-                                        Console.ResetColor();
-                                    }
-                                }
-
-                                Console.WriteLine();
-                                keepAsk1 = false;
-                                keepAsk2 = Validator.getContinue();
-                                Console.WriteLine();
-                                //keepAsk3 = false;
-
-                                //------------------------------------------------------------------------------------------------------
-                                // Running IF STATEMENT that asks whether the user wanted to check out a book. if the book
-                                // if not checked out, the code will mark the book as checked out and remove it from the list.
-                                //------------------------------------------------------------------------------------------------------
-                                if (keepAsk2 == true)
-                                {
-                                    Console.WriteLine("Which title above would you like to check out? Enter for None.");
-                                    string usertitle = Console.ReadLine().ToLower();
-
-                                    foreach (var current in book)
-                                    {
-                                        if (current.title.ToLower() == usertitle.ToLower())
-                                        {
-                                            current.checkedOut = true;
-                                            current.checkOut = DateTime.Now;
-                                            current.dueDate = current.checkOut.Add(fourteenDays);
-
-                                            Console.ForegroundColor = ConsoleColor.Yellow;
-                                            Console.WriteLine($"{current.title} checked out at: {current.checkOut}");
-                                            Console.ForegroundColor = ConsoleColor.Red;
-                                            Console.WriteLine($"Due Date is: {current.dueDate}");
-                                            Console.ResetColor();
-                                            Console.WriteLine();
-                                            book.Remove(current);
-                                            break;
-                                        }
-                                    }
-
-                                }
-
-                                //------------------------------------------------------------------------------------------------------
-                                // Running FOR LOOP to show list of titles by author
-                                // so user can see whats remaining
-                                //------------------------------------------------------------------------------------------------------
-                                foreach (var bookSearch in book)
-                                {
-                                    if (bookSearch.author == "Doyle, Sir Arthur Conan")
-                                    {
-                                        Console.ForegroundColor = ConsoleColor.Cyan;
-                                        string doyleFormat = String.Format("{0, 41}", $"{bookSearch.title}");
-                                        Console.WriteLine(doyleFormat);
-                                        Console.ResetColor();
-                                    }
-                                }
-
-                            }
-                            else if (authorName.Contains("gibson"))
-                            {
-                                foreach (var bookSearch in book)
-                                {
-                                    if (bookSearch.author == "Gibson, William")
-                                    {
-                                        Console.ForegroundColor = ConsoleColor.Cyan;
-                                        string gibsonFormat = String.Format("{0, 41}", $"{bookSearch.title}");
-                                        Console.WriteLine(gibsonFormat);
-                                        Console.ResetColor();
-                                    }
-                                }
-
-                                Console.WriteLine();
-                                keepAsk1 = false;
-                                keepAsk2 = Validator.getContinue();
-                                Console.WriteLine();
-                                //keepAsk3 = false;
-
-
-                                //------------------------------------------------------------------------------------------------------
-                                // Running IF STATEMENT that asks whether the user wanted to check out a book. if the book
-                                // if not checked out, the code will mark the book as checked out and remove it from the list.
-                                //------------------------------------------------------------------------------------------------------
-                                if (keepAsk2 == true)
-                                {
-                                    Console.WriteLine("Which title above would you like to check out? Enter for None.");
-                                    string usertitle = Console.ReadLine().ToLower();
-
-                                    foreach (var current in book)
-                                    {
-                                        if (current.title.ToLower() == usertitle.ToLower())
-                                        {
-                                            current.checkedOut = true;
-                                            current.checkOut = DateTime.Now;
-                                            current.dueDate = current.checkOut.Add(fourteenDays);
-
-                                            Console.ForegroundColor = ConsoleColor.Yellow;
-                                            Console.WriteLine($"{current.title} checked out at: {current.checkOut}");
-                                            Console.ForegroundColor = ConsoleColor.Red;
-                                            Console.WriteLine($"Due Date is: {current.dueDate}");
-                                            Console.ResetColor();
-                                            Console.WriteLine();
-                                            book.Remove(current);
-                                            break;
-                                        }
-                                    }
-
-                                }
-
-                                //------------------------------------------------------------------------------------------------------
-                                // Running FOR LOOP to show list of titles by author
-                                // so user can see whats remaining
-                                //------------------------------------------------------------------------------------------------------
-                                foreach (var bookSearch in book)
-                                {
-                                    if (bookSearch.author == "Gibson, William")
-                                    {
-                                        Console.ForegroundColor = ConsoleColor.Cyan;
-                                        string gibsonFormat = String.Format("{0, 41}", $"{bookSearch.title}");
-                                        Console.WriteLine(gibsonFormat);
-                                        Console.ResetColor();
-                                    }
-                                }
-
-                            }
-                            else if (authorName.Contains("herbert"))
-                            {
-                                foreach (var bookSearch in book)
-                                {
-                                    if (bookSearch.author == "Herbert, Frank")
-                                    {
-                                        Console.ForegroundColor = ConsoleColor.Cyan;
-                                        string herbertFormat = String.Format("{0, 41}", $"{bookSearch.title}");
-                                        Console.WriteLine(herbertFormat);
-                                        Console.ResetColor();
-                                    }
-                                }
-
-                                Console.WriteLine();
-                                keepAsk1 = false;
-                                keepAsk2 = Validator.getContinue();
-                                Console.WriteLine();
-                                //keepAsk3 = false;
-
-                                //------------------------------------------------------------------------------------------------------
-                                // Running IF STATEMENT that asks whether the user wanted to check out a book. if the book
-                                // is not checked out, the code will mark the book as checked out and remove it from the list.
-                                //------------------------------------------------------------------------------------------------------
-                                if (keepAsk2 == true)
-                                {
-                                    Console.WriteLine("Which title above would you like to check out? Enter for None.");
-                                    string usertitle = Console.ReadLine().ToLower();
-
-                                    foreach (var current in book)
-                                    {
-                                        if (current.title.ToLower() == usertitle.ToLower())
-                                        {
-                                            current.checkedOut = true;
-                                            current.checkOut = DateTime.Now;
-                                            current.dueDate = current.checkOut.Add(fourteenDays);
-
-                                            Console.ForegroundColor = ConsoleColor.Yellow;
-                                            Console.WriteLine($"{current.title} checked out at: {current.checkOut}");
-                                            Console.ForegroundColor = ConsoleColor.Red;
-                                            Console.WriteLine($"Due Date is: {current.dueDate}");
-                                            Console.ResetColor();
-                                            Console.WriteLine();
-                                            book.Remove(current);
-                                            break;
-                                        }
-                                    }
-
-                                }
-
-                                //------------------------------------------------------------------------------------------------------
-                                // Running FOR LOOP to show list of titles by author
-                                // so user can see whats remaining
-                                //------------------------------------------------------------------------------------------------------
-                                foreach (var bookSearch in book)
-                                {
-                                    if (bookSearch.author == "Herbert, Frank")
-                                    {
-                                        Console.ForegroundColor = ConsoleColor.Cyan;
-                                        string herbertFormat = String.Format("{0, 41}", $"{bookSearch.title}");
-                                        Console.WriteLine(herbertFormat);
-                                        Console.ResetColor();
-                                    }
+                                    // print out no books by that author
                                 }
                             }
-                            else if (authorName.Contains("macdonald"))
-                            {
-                                foreach (var bookSearch in book)
-                                {
-                                    if (bookSearch.author == "MacDonald, George")
-                                    {
-                                        Console.ForegroundColor = ConsoleColor.Cyan;
-                                        string macDonaldFormat = String.Format("{0,41}", $"{ bookSearch.title}");
-                                        Console.WriteLine(macDonaldFormat);
-                                        Console.ResetColor();
-                                    }
-                                }
 
-                                Console.WriteLine();
-                                keepAsk1 = false;
-                                keepAsk2 = Validator.getContinue();
-                                Console.WriteLine();
-                                //keepAsk3 = false;
 
-                                //------------------------------------------------------------------------------------------------------
-                                // Running IF STATEMENT that asks whether the user wanted to check out a book. if the book
-                                // if not checked out, the code will mark the book as checked out and remove it from the list.
-                                //------------------------------------------------------------------------------------------------------
-                                if (keepAsk2 == true)
-                                {
-                                    Console.WriteLine("Which title above would you like to check out? Enter for None.");
-                                    string usertitle = Console.ReadLine().ToLower();
-
-                                    foreach (var current in book)
-                                    {
-                                        if (current.title.ToLower() == usertitle.ToLower())
-                                        {
-                                            current.checkedOut = true;
-                                            current.checkOut = DateTime.Now;
-                                            current.dueDate = current.checkOut.Add(fourteenDays);
-
-                                            Console.ForegroundColor = ConsoleColor.Yellow;
-                                            Console.WriteLine($"{current.title} checked out at: {current.checkOut}");
-                                            Console.ForegroundColor = ConsoleColor.Red;
-                                            Console.WriteLine($"Due Date is: {current.dueDate}");
-                                            Console.ResetColor();
-                                            Console.WriteLine();
-                                            book.Remove(current);
-                                            break;
-                                        }
-                                    }
-
-                                }
-
-                                //------------------------------------------------------------------------------------------------------
-                                // Running FOR LOOP to show list of titles by author
-                                // so user can see whats remaining
-                                //------------------------------------------------------------------------------------------------------
-                                foreach (var bookSearch in book)
-                                {
-                                    if (bookSearch.author == "MacDonald, George")
-                                    {
-                                        Console.ForegroundColor = ConsoleColor.Cyan;
-                                        string macDonaldFormat = String.Format("{0,41}", $"{ bookSearch.title}");
-                                        Console.WriteLine(macDonaldFormat);
-                                        Console.ResetColor();
-                                    }
-                                }
-                            }
-                            else
-                                Console.WriteLine("I do not recognize your input. Please try one of the available options.");
-                            Console.WriteLine();
-                            keepAsk3 = true;
                         }
-                        //keepAsk2 = Validator.getContinue();
-                        //Console.WriteLine();
 
 
                     }
@@ -805,5 +391,35 @@ namespace MidTermProject2022
                 }
             }
         }
-    }
+        public static void CheckoutBookOut(List<Book> book, List<Book> bookOut, bool keepAsk2, TimeSpan fourteenDays)
+        {
+            //------------------------------------------------------------------------------------------------------
+            // Running IF STATEMENT that asks whether the user wanted to check out a book. if the book
+            // if not checked out, the code will mark the book as checked out and remove it from the list.
+            //------------------------------------------------------------------------------------------------------
+            if (keepAsk2 == true)
+            {
+                Console.WriteLine("Which title above would you like to check out? Enter for None.");
+                string usertitle = Console.ReadLine().ToLower();
+                foreach (var current in book)
+                {
+                    if (current.title.ToLower() == usertitle.ToLower())
+                    {
+                        current.checkedOut = true;
+                        current.checkOutDate = DateTime.Now;
+                        current.dueDate = current.checkOutDate.Add(fourteenDays);
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine($"{current.title} checked out at: {current.checkOutDate}");
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine($"Due Date is: { current.dueDate}");
+                        Console.ResetColor();
+                        Console.WriteLine();
+                        book.Remove(current);
+                        bookOut.Add(current);
+                        break;
+                    }
+                }
+            }
+        }
+    } 
 }
