@@ -1,36 +1,9 @@
 ﻿using System.Linq;
 
-/*
-                                        LIBRARY TERMINAL
-Write a console program which allows a user to search a library catalog and reserve books.
-
-        (1) Your solution must include some kind of a book class with a title,
-            author, status, and due date if checked out.
-                -Status should be On Shelf or Checked Out (or other statuses you can imagine).
-
-        (2) 12 items minimum; All stored in a list. (DONE)
-
-        (3) Allow the user to:
-                -Display the entire list of books.  Format it nicely. (DONE)
-                -Search for a book by author.
-                -Search for a book by title keyword.
-                -Select a book from the list to check out.
-                    --If it’s already checked out, let them know.
-                    --If not, check it out to them and set the due date to 2 weeks from today.
-                -Return a book.  (You can decide how that looks/what questions it asks.)
-
-                                        Optional enhancements:
-(Moderate) When the user quits, save the current library book list (including
-due dates and statuses) to the text file so the next time the program runs, it remembers.
-(Julius Caesar) Burn down the library of Alexandria and set human Civilization back by a few hundred years.
-
-*/
-
-
-
-
 namespace MidTermProject2022
 {
+
+
     public class Validator
     {
 
@@ -67,47 +40,6 @@ namespace MidTermProject2022
             return result;
         }
 
-
-        //------------------------------------------------------------------------------------------------------
-        //Overloaded Method to take in author name the user typed.
-        //This method will run code that lets the user choose to checkout a book or not
-        //------------------------------------------------------------------------------------------------------
-        /*public static bool getContinue(string author)
-        {
-            bool result = true;
-            bool run = true;
-
-            while (run)
-            {
-                Console.WriteLine();
-                Console.Write("Would you like to check out a book? (y/n): ");
-                string choice = Console.ReadLine().ToLower().Trim();
-                choice = choice.Trim();
-                if (choice == "y" || choice == "yes")
-                {
-                    result = true;
-                    run = false;
-
-
-
-
-                    break;
-                }
-                else if (choice == "n" || choice == "no")
-                {
-                    //Console.WriteLine();
-                    //Console.WriteLine("Thank you for visiting our library, have a nice day!");
-                    result = false;
-                    break;
-                }
-                else
-                {
-                    Console.WriteLine("I do not understand your input. Please try again.");
-                }
-            }
-            return result;
-        }*/
-
     }
 
 
@@ -121,12 +53,10 @@ namespace MidTermProject2022
         public DateTime dueDate;
         public bool checkedOut;
 
-        public Book(string newTitle, string newAuthor/*, string newStatus, string newDueDate*/)
+        public Book(string newTitle, string newAuthor)
         {
             title = newTitle;
             author = newAuthor;
-            //status = newStatus;
-            //dueDate = newDueDate;
         }
 
     }
@@ -156,25 +86,12 @@ namespace MidTermProject2022
 
             var booksOut = new List<Book>();
 
-            string asimov = "Asimov";
-            string carroll = "Carroll";
-            string dick = "Dick";
-            string doyle = "Doyle";
-            string gibson = "Gibson";
-            string herbert = "Herbert";
-            string macDonald = "MacDonald";
-
-
-
-
-
 
             // Creating a DateTime variable outside of IF and WHILE statements to
             // let the object exist until the program ends
             // DateTime checkout;
             TimeSpan fourteenDays = new TimeSpan(14, 0, 0, 0);
-
-
+            TimeSpan noduedate = new TimeSpan(0, 0, 0, 0);
 
 
             int userAns1 = 0;
@@ -201,10 +118,10 @@ namespace MidTermProject2022
 
                 MainScreen:
 
-                    Console.WriteLine("For a list of books, please input 1. For a list of authors, please input 2. If you would like" +
-                        " to leave input 3: ");
+                    Console.WriteLine(" For a list of books, please input 1. \n For a list of authors, please input 2. \n " +
+                        "To see a list of books to return enter 3. \n If you want to exit this program enter 4: ");
                     string userAnswer1 = Console.ReadLine().ToLower();
-                    trueAns1 = int.TryParse(userAnswer1, out userAns1);
+                    trueAns1 = int.TryParse(userAnswer1, out userAns1); 
                     Console.WriteLine();
 
                     if (userAns1 == 1)
@@ -213,7 +130,7 @@ namespace MidTermProject2022
                         {
                             {
                                 Console.ForegroundColor = ConsoleColor.Cyan;
-                                string titleFormat = String.Format("{0, 41}", $"{titleSearch.title}");
+                                string titleFormat = String.Format("{0, 41}", titleSearch.title);
                                 Console.WriteLine(titleFormat);
                                 Console.ResetColor();
                             }
@@ -222,83 +139,25 @@ namespace MidTermProject2022
                         keepAsk1 = false;
                         keepAsk2 = Validator.getContinue();
                         Console.WriteLine();
+
                         bool anyBooksToCheckOut = (book.Count == 0);
 
 
-                        //------------------------------------------------------------------------------------------------------
                         // Running IF STATEMENT that asks whether the user wanted to check out a book. if the book
                         // is not checked out, the code will mark the book as checked out and remove it from the list.
-                        //------------------------------------------------------------------------------------------------------
-                        if (anyBooksToCheckOut)
+                        while (keepAsk2 == true)
                         {
-                            while (keepAsk2 == true)
+                            if (anyBooksToCheckOut)
                             {
-                                Console.WriteLine("Please enter the title of the book you would like to check out, or press enter return " +
-                                    "to the previous screen: ");
-                                string userTitle = Console.ReadLine().ToLower();
-
-                                if (String.IsNullOrWhiteSpace(userTitle))
-                                {
-                                    goto MainScreen;
-                                }
-
-
+                                Console.WriteLine("There are NO books to check out!");
+                                goto MainScreen;
+                            }
+                            else
+                            {
                                 CheckoutBookOut(book, booksOut, keepAsk2, fourteenDays);
-                                /*foreach (var current in book)
-                                {
-                                    if (current.title.ToLower() == userTitle.ToLower())
-                                    {
-                                        current.checkedOut = true;
-                                        current.checkOutDate = DateTime.Now;
-                                        current.dueDate = current.checkOutDate.Add(fourteenDays);
-                                        checkedOutBooks.Add(userTitle);
-
-                                        Console.ForegroundColor = ConsoleColor.Yellow;
-                                        Console.WriteLine($"{current.title} checked out at: {current.checkOutDate}");
-                                        Console.ForegroundColor = ConsoleColor.Red;
-                                        Console.WriteLine($"Due Date is: {current.dueDate}");
-                                        Console.ResetColor();
-                                        Console.WriteLine();
-                                        book.Remove(current);
-                                        keepAsk2 = true;
-                                        break;
-                                    }
-                                    else
-                                    {
-                                        keepAsk2 = false;
-                                    }
-                                }*/
+                                keepAsk2 = false;
+                                goto MainScreen;
                             }
-
-
-
-
-                            //------------------------------------------------------------------------------------------------------
-                            // Running FOR LOOP to show list of titles by author
-                            // so user can see whats remaining
-                            //------------------------------------------------------------------------------------------------------
-                            foreach (var titleSearch in checkedOutBooks)
-                            {
-                                for (int currBookNo = 0; currBookNo < book.Count; currBookNo++)
-                                {
-                                    Console.ForegroundColor = ConsoleColor.Cyan;
-                                    string titleFormat = String.Format("{0, 41}", $"{titleSearch}");
-                                    Console.ResetColor();
-
-                                    if (currBookNo == 1)
-                                    {
-                                        Console.WriteLine("You have checked out: ");
-                                        Console.ForegroundColor = ConsoleColor.Yellow;
-                                        Console.WriteLine(titleSearch);
-                                        Console.ResetColor();
-                                        Console.WriteLine();
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-
                         }
 
                     }
@@ -312,12 +171,13 @@ namespace MidTermProject2022
                             Console.WriteLine(authorFormat);
                             Console.ResetColor();
                         }
+
                         Console.WriteLine();
                         keepAsk1 = false;
 
                         while (keepAsk3)
                         {
-                            Console.WriteLine("You may select an author by name, or press enter return to the previous screen: ");
+                            Console.WriteLine("You may select an author by name, or press enter to return to the previous screen: ");
                             string authorName = Console.ReadLine().ToLower().Trim();
                             authorName = authorName.Trim();
 
@@ -325,86 +185,76 @@ namespace MidTermProject2022
                             {
                                 goto MainScreen;
                             }
-                            else if (!string.IsNullOrWhiteSpace(authorName))
+                            else if (book.Any(x => x.author.Contains(authorName, StringComparison.CurrentCultureIgnoreCase) && !x.checkedOut))
                             {
-                                if (book.Any(x => x.author.Contains(authorName, StringComparison.CurrentCultureIgnoreCase) && !x.checkedOut))
+                                foreach (var bookSearch in book)
                                 {
-                                    foreach (var bookSearch in book)
+                                    if (bookSearch.author.Contains(authorName, StringComparison.CurrentCultureIgnoreCase))
                                     {
-                                        if (bookSearch.author.Contains(authorName, StringComparison.CurrentCultureIgnoreCase))
-                                        {
-                                            Console.ForegroundColor = ConsoleColor.Cyan;
-                                            string authorFormat = String.Format("{0, 41}", $"{bookSearch.title}");
-                                            Console.WriteLine(authorFormat);
-                                            Console.ResetColor();
-                                        }
+                                        Console.ForegroundColor = ConsoleColor.Cyan;
+                                        string authorFormat = String.Format("{0, 41}", $"{bookSearch.title}");
+                                        Console.WriteLine(authorFormat);
+                                        Console.ResetColor();
                                     }
-
-                                    Console.WriteLine();
-                                    keepAsk1 = false;
-                                    keepAsk2 = Validator.getContinue();
-                                    Console.WriteLine();
-
-                                    CheckoutBookOut(book, booksOut, keepAsk2, fourteenDays);
                                 }
-                                else
-                                {
-                                    // print out no books by that author
-                                }
+
+                                Console.WriteLine();
+                                keepAsk1 = false;
+                                keepAsk2 = Validator.getContinue();
+                                Console.WriteLine();
+
+                                CheckoutBookOut(book, booksOut, keepAsk2, fourteenDays);
+                            }
+                            else
+                            {
+                                Console.WriteLine("All books for this author are checked out.");
+                                keepAsk3 = true;
                             }
 
-
                         }
-
 
                     }
                     else if (userAns1 == 3)
                     {
-                        foreach (var titleSearch in checkedOutBooks)
-                        {
-                            for (int currBookNo = 0; currBookNo < book.Count; currBookNo++)
-                            {
-                                Console.ForegroundColor = ConsoleColor.Cyan;
-                                string titleFormat = String.Format("{0, 41}", $"{titleSearch}");
-                                Console.ResetColor();
-
-                                if (currBookNo == 1)
-                                {
-                                    Console.WriteLine("You have checked out: ");
-                                    Console.ForegroundColor = ConsoleColor.Yellow;
-                                    Console.WriteLine(titleSearch);
-                                    Console.ResetColor();
-                                    Console.WriteLine();
-                                }
-                            }
-                        }
+                        ReturnBook(booksOut, book, noduedate);
+                        goto MainScreen;
+                    }
+                    else if (userAns1 == 4)
+                    {
                         Console.WriteLine("Thank you for visiting our library, have a nice day!");
                         keepAsk1 = false;
                         keepAsk2 = false;
                     }
-                    else
-                    {
-                        Console.WriteLine("I do not recognize your input. Please try one of the available options.");
-                        Console.WriteLine();
-                        keepAsk1 = true;
-                    }
+
                 }
             }
         }
+
+
+
+
+
+
+
         public static void CheckoutBookOut(List<Book> book, List<Book> bookOut, bool keepAsk2, TimeSpan fourteenDays)
         {
             //------------------------------------------------------------------------------------------------------
             // Running IF STATEMENT that asks whether the user wanted to check out a book. if the book
             // if not checked out, the code will mark the book as checked out and remove it from the list.
             //------------------------------------------------------------------------------------------------------
+
+            bool foundBook = false;
+
             if (keepAsk2 == true)
             {
+
                 Console.WriteLine("Which title above would you like to check out? Enter for None.");
                 string usertitle = Console.ReadLine().ToLower();
                 foreach (var current in book)
                 {
-                    if (current.title.ToLower() == usertitle.ToLower())
+                    if (current.title.Contains(usertitle, StringComparison.CurrentCultureIgnoreCase))
                     {
+                        foundBook = true;
                         current.checkedOut = true;
                         current.checkOutDate = DateTime.Now;
                         current.dueDate = current.checkOutDate.Add(fourteenDays);
@@ -418,8 +268,83 @@ namespace MidTermProject2022
                         bookOut.Add(current);
                         break;
                     }
+
+                }
+
+            }
+            else if (foundBook == false)
+            {
+                Console.WriteLine("Invalid entry. The program will run again.");
+            }
+
+        }
+
+
+
+        public static void ReturnBook(List<Book> returnList, List<Book> library, TimeSpan notDue)
+        {
+
+            bool returnListhasBooks = (returnList.Count > 0);
+
+
+            if (returnListhasBooks)
+            {
+                Console.WriteLine("Books to Return: \n");
+                foreach (var book in returnList)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"{book.title} \t\t {book.author} \t\t\t\t\t {book.dueDate}");
+                    Console.ResetColor();
+                }
+
+                bool runAgain = true;
+                bool foundBook = false;
+                while (runAgain)
+                {
+                    if (returnListhasBooks)
+                    {
+                        Console.WriteLine("\nWhich title above would you like to return? Enter for None.");
+                        string usertitle = Console.ReadLine().ToLower();
+                        if (String.IsNullOrWhiteSpace(usertitle))
+                        {
+                            runAgain = false;
+                            break;
+                        }
+                        foreach (var current in returnList)
+                        {
+                            if (current.title.Contains(usertitle, StringComparison.CurrentCultureIgnoreCase))
+                            {
+                                foundBook = true;
+                                current.checkedOut = false;
+                                current.dueDate = current.checkOutDate.Add(notDue);
+                                Console.ForegroundColor = ConsoleColor.White;
+                                Console.WriteLine($"{current.title} \t\t {current.author} \t\t\t\t\t {current.dueDate}");
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.ResetColor();
+                                Console.WriteLine();
+
+                                returnList.Remove(current);
+                                library.Add(current);
+
+                                break;
+                            }
+                        }
+
+                        if (foundBook == false)
+                        {
+                            Console.WriteLine("\nInvalid entry.");
+                            runAgain = true;
+                        }
+                    }
+                    else if (returnListhasBooks == false)
+                        break;
+
                 }
             }
+            else
+                Console.WriteLine("No Books to Return");
+
         }
-    } 
+    }
 }
+
